@@ -1,1 +1,294 @@
-THE BIG PROJECT
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>repl.it</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+      body {margin: 0;}
+      :root {
+        --mdc-theme-primary: #D50032;
+      }
+      .template {display:none;}
+    </style>
+
+
+  </head>
+  <body>
+     <aside class="mdc-drawer mdc-drawer--modal" data-mdc-auto-init="MDCDrawer">
+    <div class="mdc-drawer__content">
+      <nav class="mdc-list">
+        <a class="mdc-list-item mdc-list-item--activated" href="#" aria-current="page">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
+          <span class="mdc-list-item__text">Inbox</span>
+        </a>
+        <a class="mdc-list-item" href="#">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
+          <span class="mdc-list-item__text">Outgoing</span>
+        </a>
+        <a class="mdc-list-item" href="#">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
+          <span class="mdc-list-item__text">Drafts</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+
+  <div class="mdc-drawer-scrim"></div>
+
+    <header class="mdc-top-app-bar">
+  <div class="mdc-top-app-bar__row">
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+      <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+      <span class="mdc-top-app-bar__title">Title</span>
+    </section>
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+      <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Download">file_download</button>
+      <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Print this page">print</button>
+      <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Bookmark this page">bookmark</button>
+    </section>
+  </div>
+</header>
+
+<div class="mdc-drawer-app-content mdc-top-app-bar--fixed-adjust" id="content">
+  <ul class="mdc-list demo-list mdc-list--two-line mdc-list--avatar-list" id="lines">
+    <li class="mdc-list-item mdc-ripple-upgraded template"><span class="mdc-list-item__graphic material-icons" aria-hidden="true">train</span><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Cat Photos</span>
+    <span class="mdc-list-item__secondary-text">22 Dec 2017</span></li>
+  </ul>
+  <ul class="mdc-list demo-list mdc-list--two-line mdc-list--avatar-list" id="stops">
+    <li class="mdc-list-item mdc-ripple-upgraded template"><span class="mdc-list-item__graphic material-icons" aria-hidden="true">train</span><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Cat Photos</span>
+    <span class="mdc-list-item__secondary-text">22 Dec 2017</span></span>
+    
+    <button data-mdc-auto-init="MDCIconButtonToggle"
+    class="mdc-list-item__meta mdc-icon-button add-to-favorites"
+    aria-label="Add to favorites"
+    aria-hidden="true"
+    aria-pressed="false">
+    <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">favorite</i>
+    <i class="material-icons mdc-icon-button__icon">favorite_border</i>
+  </button>
+   </li>
+  </ul>
+
+  <ul class="mdc-list demo-list mdc-list--two-line mdc-list--avatar-list" id="arrivals">
+    <li class="mdc-list-item mdc-ripple-upgraded template"><span class="mdc-list-item__graphic material-icons" aria-hidden="true">train</span><span class="mdc-list-item__text"><span class="mdc-list-item__primary-text">Cat Photos</span>
+    <span class="mdc-list-item__secondary-text">22 Dec 2017</span></li>
+  </ul>
+
+  <ul class="mdc-list" id="routes">
+  <li class="mdc-list-item template">
+    <span class="mdc-list-item__text">Single-line item</span>
+  </li>
+  </ul>
+
+</div>
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+    <script>
+      var db = new Dexie("ttapp");
+      db.version(1).stores({
+          history: '++id',
+          favorites: 'stop_id'
+      });
+
+      db.history.put({"opened": new Date()});
+
+    </script>
+
+
+    <script src="script.js"></script>
+    <script>
+      window.mdc.autoInit();
+      // mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer')); 
+      const drawer = document.querySelector('.mdc-drawer').MDCDrawer;
+      // console.log(drawer);
+    
+      // open drawer on nav icon
+      document.getElementsByClassName("mdc-top-app-bar__navigation-icon")[0].addEventListener("click", function(){
+        drawer.open = true;
+      });
+    
+      
+      // close drawer on selection
+      let navs = document.getElementsByClassName("mdc-list-item");
+      
+      for (let i = 0; i < navs.length; i++) {
+        navs[i].addEventListener("click", function() {
+          drawer.open = false;
+        })
+      };
+
+    </script>
+    
+    <script>
+      let corsAnywhere = "https://cors-anywhere.herokuapp.com/";
+      let key="97e61f6f396344fba2d0433098ae1f38";
+      let route = "blue";
+      let endpoint = "http://lapi.transitchicago.com/api/1.0/ttpositions.aspx?outputType=JSON&key=" + key;
+      
+      let arrivalsEndpoint = corsAnywhere + "http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?outputType=JSON&key=" + key;
+
+      let stopsEndpoint =  "https://data.cityofchicago.org/resource/8pix-ypme.json";
+
+
+      let routesURL = corsAnywhere + endpoint + 
+      "&rt=" + route;
+      
+      let stops;
+
+      let listDivider = $("<li>")
+        .addClass("mdc-list-divider")
+        .attr("role","separator");
+
+      displayLines = () => {
+        $("ul").hide();
+        let template = $("ul#lines li.template");
+        $("ul#lines").append(listDivider.clone());
+        for (line in ctaTrainLines) {
+          let clone = template.clone();
+          clone.find("span.mdc-list-item__primary-text").text(line);
+
+          clone.find("span.mdc-list-item__graphic.material-icons").css("color", line);
+          clone.find("span.mdc-list-item__secondary-text").text(ctaTrainLines[line]["title"]);
+          clone.removeClass("template");
+          clone.attr("data-appLineCode",line);
+          $("ul#lines").append(clone);
+          $("ul#lines").append(listDivider.clone());
+        }
+
+        $("ul#lines li").on("click", function(){
+          displayStops($(this).attr("data-appLineCode"));
+        });
+        $("ul#lines").show();
+      }
+
+      /*
+          retrieve the stops data for Chicago Data Portal
+      */
+      getStops = () => {
+        $.get(stopsEndpoint, function(data){
+          stops = data;
+        });
+      }
+
+      displayStops = (appLineCode) => {
+        $("ul").hide();
+        $("ul#stops li").not(".template").remove();
+        let lineStops = stops.filter((el) => {
+          return el[appLineCode] == true;
+        })
+
+        let ctaLineCode = ctaTrainLines[appLineCode]["code"];
+
+        let template = $("ul#stops li.template");
+        
+        for (i in lineStops) {
+          stop = lineStops[i];
+          
+          $("ul#stops").append(listDivider.clone());
+          let clone = template.clone();
+          clone.find("span.mdc-list-item__primary-text").text(stop.station_descriptive_name);
+          clone.find("span.mdc-list-item__graphic.material-icons").css("color", appLineCode);
+          clone.find("span.mdc-list-item__secondary-text").text(stop.stop_name);
+          clone.removeClass("template");
+          clone.attr("data-stop_id",stop.stop_id);
+          clone.attr("data-appLineCode",appLineCode);
+          $("ul#stops").append(clone);
+          
+          let iconToggle = clone.find(".mdc-icon-button");
+          mdc.iconButton.MDCIconButtonToggle.attachTo(iconToggle[0])
+
+          $("ul#stops").append(listDivider.clone());
+        }
+
+        // window.mdc.autoInit();
+        
+        $("ul#stops li button.mdc-icon-button").on("click", function(e) {
+          
+          // console.log($(this));
+          // console.log($(this).closest("button"));
+          // console.log($(this).closest("button")[0]);
+          // let icon = mdc.iconButton.MDCIconButtonToggle.attachTo($(this)[0]);
+          let iconEl = $(this)[0];
+          console.log(iconEl);
+          mdc.iconButton.MDCIconButtonToggle.attachTo(iconEl);
+          let icon = iconEl.MDCIconButtonToggle;
+          console.log(icon);
+          updateFavorites($(this).closest("li").attr("data-stop_id"), icon.on);
+          //console.log(icon.on);
+          // e.stopPropagation();
+        });
+
+        $("ul#stops li span.mdc-list-item__text").on("click", function(e){
+          let li = $(this).closest("li");
+          getArrivals(li.attr("data-stop_id"), li.attr("data-appLineCode"));
+        });
+      
+        $("ul#stops").show(); 
+        // window.mdc.autoInit();
+      }
+
+      displayArrivals = (data) => {
+        $("ul").hide();
+        $("ul#arrivals li").not(".template").remove();
+        let arrivals = data.ctatt.eta;
+        let template = $("ul#arrivals li.template");
+        let now = Date.now();
+        for (i in arrivals) {
+          let arrival = arrivals[i];
+          let arrivalDateTime = new Date(arrival.arrT);
+
+          let arrivalSeconds = parseInt((arrivalDateTime - now)/1000);
+          let arrivalMin = parseInt(arrivalSeconds/60)
+          let arrivalSec = arrivalSeconds % 60
+          
+          $("ul#arrivals").append(listDivider.clone());
+          let clone = template.clone();
+          clone.find("span.mdc-list-item__primary-text").text(arrivalMin + ":" + arrivalSec + " " + arrival.arrT);
+          // clone.find("span.mdc-list-item__graphic.material-icons").css("color", appLineCode);
+          clone.find("span.mdc-list-item__secondary-text").text(arrival.destNm);
+          clone.removeClass("template");
+          // clone.attr("data-stop_id",stop.stop_id);
+          // clone.attr("data-appLineCode",appLineCode);
+          $("ul#arrivals").append(clone);
+          $("ul#arrivals").append(listDivider.clone());
+        }  
+        $("ul#arrivals").show();       
+      };
+
+
+      getArrivals = (stop_id, appLineCode) => {
+        // console.log(stop_id, appLineCode)
+        let ctaLineCode = ctaTrainLines[appLineCode]["code"];
+
+        let arrivalsURL = arrivalsEndpoint + "&rt=" + ctaLineCode + "&stpid=" + stop_id;
+
+        $.get(arrivalsURL, displayArrivals);
+      }
+
+
+      updateFavorites = (stop_id, isFavorite) => {
+        if (isFavorite) {
+          db.favorites.add({"stop_id": stop_id});
+        } else {
+          db.favorites.delete(stop_id);
+        }
+
+      }
+
+
+      getStops();
+      displayLines();
+
+
+
+
+    </script>
+  </body>
+</html>
