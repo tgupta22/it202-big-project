@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+      <link rel="manifest" href="./manifest.json">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>repl.it</title>
@@ -94,10 +95,17 @@
       var db = new Dexie("ttapp");
       db.version(1).stores({
           history: '++id',
-          favorites: 'stop_id'
+          favorites: 'stop_id',
+          settings: '++id'
       });
 
       db.history.put({"opened": new Date()});
+      db.settings.add({"darkMode": true})
+            db.favorites.add({"darkMode": true})
+
+       db.visits.each(function(i) {
+        document.body.innerHTML += i.dateTime + "<br>";
+      });
 
     </script>
 
@@ -128,11 +136,13 @@
     
     <script>
       let corsAnywhere = "https://cors-anywhere.herokuapp.com/";
-      let key="97e61f6f396344fba2d0433098ae1f38";
-      let route = "blue";
+      //let key="97e61f6f396344fba2d0433098ae1f38";
+
+      let key = "fNEedaairYxegpJgC5xTyH59p";
+      let route = "3";
       let endpoint = "http://lapi.transitchicago.com/api/1.0/ttpositions.aspx?outputType=JSON&key=" + key;
       
-      let arrivalsEndpoint = corsAnywhere + "http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?outputType=JSON&key=" + key;
+      let arrivalsEndpoint = corsAnywhere + "http://www.ctabustracker.com/bustime/api/v2/getdirections?key=fNEedaairYxegpJgC5xTyH59p&rt=60";
 
       let stopsEndpoint =  "https://data.cityofchicago.org/resource/8pix-ypme.json";
 
@@ -150,12 +160,12 @@
         $("ul").hide();
         let template = $("ul#lines li.template");
         $("ul#lines").append(listDivider.clone());
-        for (line in ctaTrainLines) {
+        for (line in ctaBuses) {
           let clone = template.clone();
           clone.find("span.mdc-list-item__primary-text").text(line);
 
           clone.find("span.mdc-list-item__graphic.material-icons").css("color", line);
-          clone.find("span.mdc-list-item__secondary-text").text(ctaTrainLines[line]["title"]);
+          clone.find("span.mdc-list-item__secondary-text").text(ctaBuses[line]["title"]);
           clone.removeClass("template");
           clone.attr("data-appLineCode",line);
           $("ul#lines").append(clone);
@@ -184,7 +194,7 @@
           return el[appLineCode] == true;
         })
 
-        let ctaLineCode = ctaTrainLines[appLineCode]["code"];
+        let ctaLineCode = ctaBuses[appLineCode]["code"];
 
         let template = $("ul#stops li.template");
         
@@ -290,5 +300,20 @@
 
 
     </script>
+
+    <script>
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+        .then(function(reg) {
+          // registration worked
+          console.log('Registration succeeded. Scope is ' + reg.scope);
+        }).catch(function(error) {
+          // registration failed
+          console.log('Registration failed with ' + error);
+        });
+      }
+
+      </script>
   </body>
 </html>
