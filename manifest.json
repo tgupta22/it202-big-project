@@ -1,12 +1,12 @@
 {
-  "name": "CTA-U BUS TRACKER!",
-  "short_name": "BUS Tracker!",
+  "name": "Say It!",
+  "short_name": "Say It!",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "navy",
-  "description": "An app to track CTA Buses and also allow you to set a default route.",
+  "description": "An app to make your phone say things.",
   "icons": [{
-    "src": "./BUS_Tracker.png",
+    "src": "./icon.png",
     "sizes": "192x192",
     "type": "image/png"
   }],
