@@ -1,6 +1,6 @@
 {
-  "name": "Bus Tracker!",
-  "short_name": "Bus Tracker!",
+  "name": "Your Bus Route!",
+  "short_name": "Your Bus Route!",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "navy",
