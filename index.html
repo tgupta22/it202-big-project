@@ -5,7 +5,13 @@
     <link rel="manifest" href="./manifest.json">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    
+     <style>
+       /* Set the size of the div element that contains the map */
+      #map {
+        height: 400px;  /* The height is 400 pixels */
+        width: 100%;  /* The width is the width of the web page */
+       }
+    </style>
   
     
     <title>repl.it</title>
@@ -290,7 +296,7 @@
       displayLines();
     </script>
     
-   <video id="player" controls autoplay></video>
+    <video id="player" controls autoplay></video>
 <button id="capture">Capture</button>
 <canvas id="canvas" width=320 height=240></canvas>
 
@@ -340,6 +346,32 @@
       player.srcObject = stream;
     });
 </script>
+    
+    
+    
+     <h3>Choose your Stop</h3>
+    <!--The div element for the map -->
+    <div id="map"></div>
+    <script>
+// Initialize and add the map
+function initMap() {
+  // The location of Uluru
+  var uluru = {lat: 41.881832, lng: -87.623177};
+  // The map, centered at Uluru
+  var map = new google.maps.Map(
+      document.getElementById('map'), {zoom: 4, center: uluru});
+  // The marker, positioned at Uluru
+  var marker = new google.maps.Marker({position: uluru, map: map});
+}
+    </script>
+    <!--Load the API from the specified URL
+    * The async attribute allows the browser to render the page while the API loads
+    * The key parameter will contain your own API key (which is not needed for this tutorial)
+    * The callback parameter executes the initMap() function
+    -->
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdxYZ757mrz7DeHhy7rMs6PEl0j3MQB68&callback=initMap">
+    </script>
 
 <!--     <script>
       if ('serviceWorker' in navigator) {
