@@ -5,12 +5,18 @@
     <link rel="manifest" href="./manifest.json">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
+    
+  
+    
     <title>repl.it</title>
     <link href="style.css" rel="stylesheet" type="text/css" />
     <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+    
+    
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <style>
@@ -31,6 +37,8 @@
           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
           <span class="mdc-list-item__text">Recent</span>
         </a>
+        
+        
         <a class="mdc-list-item" href="#">
           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
           <span class="mdc-list-item__text">Near You</span>
@@ -99,15 +107,12 @@
           favorites: 'stop_id',
           settings: '++id'
       });
-
       db.history.put({"opened": new Date()});
       db.settings.add({"darkMode": true})
             db.favorites.add({"darkMode": true})
-
 //        db.visits.each(function(i) {
 //         document.body.innerHTML += i.dateTime + "<br>";
 //       });
-
     </script>
 
 
@@ -121,6 +126,8 @@
       // open drawer on nav icon
       document.getElementsByClassName("mdc-top-app-bar__navigation-icon")[0].addEventListener("click", function(){
         drawer.open = true;
+        
+        
       });
     
       
@@ -132,31 +139,24 @@
           drawer.open = false;
         })
       };
-
     </script>
     
     <script>
       let corsAnywhere = "https://cors-anywhere.herokuapp.com/";
       //let key="97e61f6f396344fba2d0433098ae1f38";
-
       let key = "fNEedaairYxegpJgC5xTyH59p";
       let route = "3";
-      let endpoint = "http://lapi.transitchicago.com/api/1.0/ttpositions.aspx?outputType=JSON&key=" + key;
+      let endpoint = "http://www.ctabustracker.com/bustime/api/v2/getstops?&format=json&key=" + key;
       
       let arrivalsEndpoint = corsAnywhere + "http://www.ctabustracker.com/bustime/api/v2/getdirections?key=fNEedaairYxegpJgC5xTyH59p&rt=60";
-
-      let stopsEndpoint =  "https://data.cityofchicago.org/resource/8pix-ypme.json";
-
-
+      let stopsEndpoint =  "http://www.ctabustracker.com/bustime/api/v2/getstops?&format=json&key=";
       let routesURL = corsAnywhere + endpoint + 
-      "&rt=" + route;
+      "&rt=";
       
       let stops;
-
       let listDivider = $("<li>")
         .addClass("mdc-list-divider")
         .attr("role","separator");
-
       displayLines = () => {
         $("ul").hide();
         let template = $("ul#lines li.template");
@@ -164,7 +164,6 @@
         for (line in ctaBuses) {
           let clone = template.clone();
           clone.find("span.mdc-list-item__primary-text").text(line);
-
           clone.find("span.mdc-list-item__graphic.material-icons").css("color", line);
           clone.find("span.mdc-list-item__secondary-text").text(ctaBuses[line]["title"]);
           clone.removeClass("template");
@@ -172,31 +171,38 @@
           $("ul#lines").append(clone);
           $("ul#lines").append(listDivider.clone());
         }
-
         $("ul#lines li").on("click", function(){
           displayStops($(this).attr("data-appLineCode"));
         });
         $("ul#lines").show();
       }
-
       /*
           retrieve the stops data for Chicago Data Portal
       */
+      
+      
       getStops = () => {
         $.get(stopsEndpoint, function(data){
           stops = data;
         });
       }
-
       displayStops = (appLineCode) => {
+        
+        var busStops = routesURL + (appLineCode) ;
+        
+        $.get(busStops,function(data)
+             {
+          
+      console.log(data["bustime-response"]["ptr"][0]["pt"]);          
+        });
+        
+        
         $("ul").hide();
         $("ul#stops li").not(".template").remove();
         let lineStops = stops.filter((el) => {
           return el[appLineCode] == true;
         })
-
         let ctaLineCode = ctaBuses[appLineCode]["code"];
-
         let template = $("ul#stops li.template");
         
         for (i in lineStops) {
@@ -214,10 +220,8 @@
           
           let iconToggle = clone.find(".mdc-icon-button");
           mdc.iconButton.MDCIconButtonToggle.attachTo(iconToggle[0])
-
           $("ul#stops").append(listDivider.clone());
         }
-
         // window.mdc.autoInit();
         
         $("ul#stops li button.mdc-icon-button").on("click", function(e) {
@@ -235,7 +239,6 @@
           //console.log(icon.on);
           // e.stopPropagation();
         });
-
         $("ul#stops li span.mdc-list-item__text").on("click", function(e){
           let li = $(this).closest("li");
           getArrivals(li.attr("data-stop_id"), li.attr("data-appLineCode"));
@@ -244,7 +247,6 @@
         $("ul#stops").show(); 
         // window.mdc.autoInit();
       }
-
       displayArrivals = (data) => {
         $("ul").hide();
         $("ul#arrivals li").not(".template").remove();
@@ -254,7 +256,6 @@
         for (i in arrivals) {
           let arrival = arrivals[i];
           let arrivalDateTime = new Date(arrival.arrT);
-
           let arrivalSeconds = parseInt((arrivalDateTime - now)/1000);
           let arrivalMin = parseInt(arrivalSeconds/60)
           let arrivalSec = arrivalSeconds % 60
@@ -272,38 +273,75 @@
         }  
         $("ul#arrivals").show();       
       };
-
-
       getArrivals = (stop_id, appLineCode) => {
         // console.log(stop_id, appLineCode)
         let ctaLineCode = ctaTrainLines[appLineCode]["code"];
-
         let arrivalsURL = arrivalsEndpoint + "&rt=" + ctaLineCode + "&stpid=" + stop_id;
-
         $.get(arrivalsURL, displayArrivals);
       }
-
-
       updateFavorites = (stop_id, isFavorite) => {
         if (isFavorite) {
           db.favorites.add({"stop_id": stop_id});
         } else {
           db.favorites.delete(stop_id);
         }
-
       }
-
-
       getStops();
       displayLines();
-
-
-
-
     </script>
+    
+   <video id="player" controls autoplay></video>
+<button id="capture">Capture</button>
+<canvas id="canvas" width=320 height=240></canvas>
 
-    <script>
 
+<div id="target">You can drag an image file here</div>
+<script>
+  const target = document.getElementById('target');
+
+  target.addEventListener('drop', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    doSomethingWithFiles(e.dataTransfer.files);
+  });
+
+  target.addEventListener('dragover', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    e.dataTransfer.dropEffect = 'copy';
+  });
+</script>
+<input type="file" accept="image/*" id="file-input">
+<script>
+  const fileInput = document.getElementById('file-input');
+
+  fileInput.addEventListener('change', (e) => doSomethingWithFiles(e.target.files));
+</script>
+<script>
+  const player = document.getElementById('player');
+  const canvas = document.getElementById('canvas');
+  const context = canvas.getContext('2d');
+  const captureButton = document.getElementById('capture');
+
+  const constraints = {
+    video: true,
+  };
+
+  captureButton.addEventListener('click', () => {
+    // Draw the video frame to the canvas.
+    context.drawImage(player, 0, 0, canvas.width, canvas.height);
+  });
+
+  // Attach the video stream to the video element and autoplay.
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then((stream) => {
+      player.srcObject = stream;
+    });
+</script>
+
+<!--     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js')
         .then(function(reg) {
@@ -314,7 +352,6 @@
           console.log('Registration failed with ' + error);
         });
       }
-
-      </script>
+      </script> -->
   </body>
 </html>
